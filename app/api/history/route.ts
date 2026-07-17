@@ -1,11 +1,11 @@
 import { and, desc, eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
-import { getChatGPTUser } from "../../chatgpt-auth";
+import { getProofUser } from "../../proof-auth";
 import { getDb } from "../../../db";
 import { checkIns } from "../../../db/schema";
 
 export async function GET() {
-  const user = await getChatGPTUser();
+  const user = await getProofUser();
   if (!user) return NextResponse.json({ error: "Sign in required." }, { status: 401 });
 
   const history = await getDb()

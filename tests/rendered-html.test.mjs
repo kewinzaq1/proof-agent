@@ -31,10 +31,18 @@ test("server-renders the Proof landing page and live prototype link", async () =
   assert.doesNotMatch(html, /codex-preview|react-loading-skeleton/i);
 });
 
-test("protects the personal experiment area with ChatGPT sign-in", async () => {
+test("protects the personal experiment area with Proof sign-in", async () => {
   const response = await request("/experiment");
   assert.ok([302, 307, 308].includes(response.status));
-  assert.match(response.headers.get("location") ?? "", /\/signin-with-chatgpt\?return_to=/);
+  assert.match(response.headers.get("location") ?? "", /\/login\?return_to=/);
+});
+
+test("renders the simple Proof account screen", async () => {
+  const response = await request("/login");
+  assert.equal(response.status, 200);
+  const html = await response.text();
+  assert.match(html, /No OpenAI account required/);
+  assert.match(html, /Create account/);
 });
 
 test("coach fallback still returns a complete loop", async () => {

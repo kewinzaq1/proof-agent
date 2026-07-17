@@ -2,6 +2,21 @@ import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 
 export type FocusArea = "work" | "energy" | "relationships" | "sleep" | "confidence" | "health";
 
+export const accounts = sqliteTable("accounts", {
+  email: text("email").primaryKey(),
+  displayName: text("display_name").notNull(),
+  passwordSalt: text("password_salt").notNull(),
+  passwordHash: text("password_hash").notNull(),
+  createdAt: text("created_at").notNull(),
+});
+
+export const sessions = sqliteTable("sessions", {
+  tokenHash: text("token_hash").primaryKey(),
+  userEmail: text("user_email").notNull(),
+  expiresAt: text("expires_at").notNull(),
+  createdAt: text("created_at").notNull(),
+});
+
 export const profiles = sqliteTable("profiles", {
   email: text("email").primaryKey(),
   displayName: text("display_name").notNull(),

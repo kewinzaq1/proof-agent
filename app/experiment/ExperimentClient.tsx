@@ -284,7 +284,11 @@ function LoadingScreen() {
 }
 
 function AppHeader({ profile, onHome }: { profile: Profile; onHome?: () => void }) {
-  return <header className="experiment-nav"><button type="button" className="brand brand-button" onClick={onHome} aria-label="Your Proof home"><span className="brand-mark">P</span><span>Proof</span></button><div className="experiment-status"><span /> Learning over time</div><div className="account-chip"><span>{profile.displayName.slice(0, 1).toUpperCase()}</span><div><strong>{profile.displayName}</strong><small>{profile.checkInRhythm} rhythm</small></div><a href="/signout-with-chatgpt?return_to=/">Sign out</a></div></header>;
+  async function signOut() {
+    await fetch("/api/auth/logout", { method: "POST" });
+    window.location.assign("/");
+  }
+  return <header className="experiment-nav"><button type="button" className="brand brand-button" onClick={onHome} aria-label="Your Proof home"><span className="brand-mark">P</span><span>Proof</span></button><div className="experiment-status"><span /> Learning over time</div><div className="account-chip"><span>{profile.displayName.slice(0, 1).toUpperCase()}</span><div><strong>{profile.displayName}</strong><small>{profile.checkInRhythm} rhythm</small></div><button type="button" onClick={() => void signOut()}>Sign out</button></div></header>;
 }
 
 function OnboardingWizard({ user, onComplete }: { user: { displayName: string; email: string }; onComplete: (profile: Profile) => void }) {

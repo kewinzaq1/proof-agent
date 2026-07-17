@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { requireChatGPTUser } from "../chatgpt-auth";
+import { requireProofUser } from "../proof-auth";
 import ExperimentClient from "./ExperimentClient";
 import "./experiment.css";
 
@@ -11,6 +11,6 @@ export const metadata: Metadata = {
 };
 
 export default async function ExperimentPage() {
-  const user = await requireChatGPTUser("/experiment");
+  const user = await requireProofUser("/experiment");
   return <ExperimentClient user={{ displayName: user.displayName, email: user.email }} />;
 }

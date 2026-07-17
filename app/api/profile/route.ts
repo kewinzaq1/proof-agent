@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
-import { getChatGPTUser } from "../../chatgpt-auth";
+import { getProofUser } from "../../proof-auth";
 import { getDb } from "../../../db";
 import { profiles, type FocusArea } from "../../../db/schema";
 
@@ -14,7 +14,7 @@ type ProfileInput = {
 };
 
 export async function GET() {
-  const user = await getChatGPTUser();
+  const user = await getProofUser();
   if (!user) return NextResponse.json({ error: "Sign in required." }, { status: 401 });
 
   const [profile] = await getDb().select().from(profiles).where(eq(profiles.email, user.email)).limit(1);
@@ -22,7 +22,7 @@ export async function GET() {
 }
 
 export async function PUT(request: Request) {
-  const user = await getChatGPTUser();
+  const user = await getProofUser();
   if (!user) return NextResponse.json({ error: "Sign in required." }, { status: 401 });
 
   const input = (await request.json()) as ProfileInput;
