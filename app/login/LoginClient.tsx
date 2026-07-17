@@ -21,7 +21,15 @@ export default function LoginClient() {
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ displayName, email, password, returnTo }),
       });
-      const result = (await response.json()) as { error?: string; returnTo?: string };
+      const responseText = await response.text();
+      let result: { error?: string; returnTo?: string } = {};
+      if (responseText) {
+        try {
+          result = JSON.parse(responseText) as { error?: string; returnTo?: string };
+        } catch {
+          result = {};
+        }
+      }
       if (!response.ok) throw new Error(result.error || "Proof couldn’t sign you in.");
       window.location.assign(result.returnTo || "/experiment");
     } catch (cause) {
