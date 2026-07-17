@@ -13,7 +13,7 @@
 
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
-body { margin: 0; background: var(--paper); color: var(--ink); font-family: Arial, Helvetica, sans-serif; }
+body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--font-space-grotesk), Arial, sans-serif; }
 a { color: inherit; text-decoration: none; }
 button, input { font: inherit; }
 .shell { width: min(1180px, calc(100% - 48px)); margin-inline: auto; }
@@ -34,7 +34,7 @@ button, input { font: inherit; }
 .eyebrow { display: flex; align-items: center; gap: 10px; font-size: 11px; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; color: #4f5b57; }
 .eyebrow > span { width: 7px; height: 7px; border-radius: 50%; background: #2d8b6b; box-shadow: 0 0 0 5px rgba(45,139,107,.12); }
 .hero h1, .section h2, .loop-intro h2, .principles h2, .final-cta h2 { margin: 24px 0; font-size: clamp(54px, 5.5vw, 82px); line-height: .98; letter-spacing: -.065em; font-weight: 560; }
-h1 em, h2 em { font-family: Georgia, 'Times New Roman', serif; font-weight: 400; color: #2f725e; }
+h1 em, h2 em { font-family: var(--font-instrument-serif), Georgia, serif; font-weight: 400; color: #2f725e; }
 .hero-lede { max-width: 590px; margin: 0; font-size: 19px; line-height: 1.6; color: #56615e; }
 .hero-actions { display: flex; align-items: center; gap: 28px; margin-top: 36px; }
 .text-link { font-size: 13px; font-weight: 700; border-bottom: 1px solid #a6aaa7; padding-block: 9px; }
