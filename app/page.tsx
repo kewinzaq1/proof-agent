@@ -58,7 +58,7 @@ export default function Home() {
           <a href="#loop">The loop</a>
           <a href="#principles">Principles</a>
         </div>
-        <a className="button button-small" href="#demo">View the demo</a>
+        <a className="button button-small" href="/experiment">Run an experiment</a>
       </nav>
 
       <section className="hero shell" id="top">
@@ -70,7 +70,7 @@ export default function Home() {
             personalized experiments—then adapts to what real life teaches you.
           </p>
           <div className="hero-actions">
-            <a className="button" href="#demo">See the prototype <span aria-hidden="true">→</span></a>
+            <a className="button" href="/experiment">Run the live prototype <span aria-hidden="true">→</span></a>
             <a className="text-link" href="#loop">See how the loop works <span aria-hidden="true">↓</span></a>
           </div>
           <div className="trust-line">
@@ -208,7 +208,7 @@ export default function Home() {
           <h2>One goal. One experiment.<br /><em>One smarter next step.</em></h2>
           <p>See how Proof turns a real behavior challenge into a self-correcting loop—and changes its hypothesis when the evidence changes.</p>
           <div className="demo-actions">
-            <a className="demo-primary" href="#top">Explore the prototype <span aria-hidden="true">↗</span></a>
+            <a className="demo-primary" href="/experiment">Run an experiment <span aria-hidden="true">↗</span></a>
             <a className="demo-secondary" href="#loop">Walk through the loop <span aria-hidden="true">↓</span></a>
           </div>
           <small>Hackathon prototype · July 2026 · San Francisco</small>

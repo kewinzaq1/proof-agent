@@ -1,0 +1,37 @@
+---
+version: "2.0"
+
+services:
+  proof-agent:
+    image: ghcr.io/kewinsz/proof-agent:latest
+    expose:
+      - port: 8787
+        as: 80
+        to:
+          - global: true
+    env:
+      - ZERO_CAPABILITY_ID=cap_MqjItdttzo4ViiV9uBkZC
+      - PROOF_WEB_ORIGIN=https://proof-personal-experiments.kewinszlezingier.chatgpt.site
+
+profiles:
+  compute:
+    proof-agent:
+      resources:
+        cpu:
+          units: 0.25
+        memory:
+          size: 256Mi
+        storage:
+          size: 512Mi
+  placement:
+    dcloud:
+      pricing:
+        proof-agent:
+          denom: uakt
+          amount: 1000
+
+deployment:
+  proof-agent:
+    dcloud:
+      profile: proof-agent
+      count: 1
