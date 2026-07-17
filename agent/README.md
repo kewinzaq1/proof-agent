@@ -12,6 +12,7 @@ The frontend works without this service, but calls it when `PROOF_AGENT_URL` is 
 - `POMERIUM_JWKS_URL`: JWKS endpoint published by the Pomerium cluster.
 - `POMERIUM_ISSUER`: expected route issuer (normally the route hostname).
 - `POMERIUM_AUDIENCE`: expected route audience (normally the route hostname).
+- `TRUST_POMERIUM_PROXY=true`: for the Akash topology where the agent has no public ingress and only the Pomerium service can reach it on the private deployment network.
 
 The included `deploy.yaml` is an Akash SDL deployment definition. Replace the image URL with the published container before deploying.
 

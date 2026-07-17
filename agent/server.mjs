@@ -8,6 +8,7 @@ const port = Number(process.env.PORT ?? 8787);
 const capability = process.env.ZERO_CAPABILITY_ID ?? "cap_MqjItdttzo4ViiV9uBkZC";
 const token = process.env.PROOF_AGENT_TOKEN;
 const requirePomerium = process.env.REQUIRE_POMERIUM === "true";
+const trustPomeriumProxy = process.env.TRUST_POMERIUM_PROXY === "true";
 const pomeriumJwksUrl = process.env.POMERIUM_JWKS_URL;
 const pomeriumIssuer = process.env.POMERIUM_ISSUER;
 const pomeriumAudience = process.env.POMERIUM_AUDIENCE;
@@ -91,12 +92,17 @@ async function callZero(input) {
 
 async function verifyPomerium(request) {
   if (!requirePomerium) return null;
+  const assertion = request.headers["x-pomerium-jwt-assertion"];
+  if (typeof assertion !== "string") throw new Error("Missing Pomerium identity assertion");
+
+  // In the Akash deployment the agent has no public ingress: only the Pomerium
+  // service on the private deployment network can reach it. Pomerium has already
+  // authenticated and signed this assertion at the sole public boundary.
+  if (trustPomeriumProxy) return { proxyVerified: true };
+
   if (!pomeriumJwks || !pomeriumIssuer || !pomeriumAudience) {
     throw new Error("Pomerium verification is required but its JWKS, issuer, or audience is missing");
   }
-
-  const assertion = request.headers["x-pomerium-jwt-assertion"];
-  if (typeof assertion !== "string") throw new Error("Missing Pomerium identity assertion");
 
   const { payload } = await jwtVerify(assertion, pomeriumJwks, {
     issuer: pomeriumIssuer,

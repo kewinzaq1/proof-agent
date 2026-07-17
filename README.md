@@ -34,7 +34,7 @@ The UI only displays **Pomerium → Akash → Zero** when the agent has verified
 
 ### Pomerium — identity-aware agent gateway
 
-The website authenticates to the protected agent route with a Pomerium Zero service account. Pomerium evaluates the route policy and forwards a signed `X-Pomerium-Jwt-Assertion`. The agent verifies that assertion against Pomerium's JWKS, issuer, and audience before accepting a coaching request.
+The website authenticates to the protected agent route with a Pomerium Zero service account. Pomerium evaluates the route policy and forwards a signed `X-Pomerium-Jwt-Assertion`. In the Akash topology, Pomerium is the only public service and the coaching agent accepts assertions only on the private deployment network. A standalone agent can instead verify the assertion cryptographically against Pomerium's JWKS, issuer, and audience.
 
 This keeps private behavioral reflections away from a bearer-token-only public endpoint and makes the security layer part of the product—not a logo in the footer. See `pomerium/README.md` for the route and service-account setup.
 
@@ -53,7 +53,7 @@ The frontend always has a deterministic fallback. If the paid capability or netw
 The checked-in integrations are ready, but they only count as live usage after the external services are configured:
 
 1. Publish the `agent/` image and deploy `deploy.yaml` on Akash.
-2. Put the resulting Akash provider URL behind a Pomerium Zero route with identity headers enabled.
+2. Point the Pomerium Zero cluster at the Akash Pomerium endpoint and create a route to the private `http://proof-agent:8787` service with identity headers enabled.
 3. Create a Pomerium service account allowed by that route and configure its raw JWT as `POMERIUM_SERVICE_ACCOUNT_JWT` on the website.
 4. Configure the Pomerium JWKS, issuer, and audience values on the Akash agent.
 5. Fund/authenticate Zero and run one complete plan-and-reflect loop.

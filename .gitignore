@@ -4,6 +4,7 @@
 /node_modules
 **/node_modules/
 /compose.yaml
+/deploy.live.yaml
 /.pnp
 .pnp.*
 .yarn/*
