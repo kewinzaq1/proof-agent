@@ -126,7 +126,7 @@ export default function Home() {
 
       <section className="feature-proof section" id="proof">
         <div className="shell">
-          <div className="section-label">01 / THE FEATURE, END TO END</div>
+          <div className="section-label">01 / SEE PROOF IN MOTION</div>
           <div className="feature-intro">
             <h2>It doesn’t defend its advice.<br /><em>It updates its beliefs.</em></h2>
             <p>Proof holds several explanations at once, chooses one to test, records what should happen, and changes course when real life disagrees.</p>
@@ -134,8 +134,8 @@ export default function Home() {
 
           <div className="agent-demo">
             <div className="agent-demo-top">
-              <div><span className="live-dot" /> Verified production run</div>
-              <span>REAL INPUT → TESTABLE CHANGE</span>
+              <div><span className="live-dot" /> A real moment, reconsidered</div>
+              <span>ONE REFLECTION AT A TIME</span>
             </div>
 
             <div className="user-claim">
@@ -145,7 +145,7 @@ export default function Home() {
 
             <div className="demo-grid demo-grid-before">
               <div className="demo-column">
-                <div className="demo-column-label"><span>01</span> ZERO GENERATES COMPETING EXPLANATIONS</div>
+                <div className="demo-column-label"><span>01</span> THREE POSSIBILITIES, NOT ONE VERDICT</div>
                 <div className="candidate-list">
                   {firstRead.map((item, index) => (
                     <article className={`candidate-card ${item.tone} ${index === 0 ? "selected" : ""}`} key={item.label}>
@@ -157,7 +157,7 @@ export default function Home() {
                 </div>
               </div>
               <div className="demo-column">
-                <div className="demo-column-label"><span>02</span> AKASH CHOOSES WHAT TO TEST</div>
+                <div className="demo-column-label"><span>02</span> ONE BELIEF BECOMES A TEST</div>
                 <div className="prediction-card">
                   <small>SELECTED HYPOTHESIS</small>
                   <h3>Task ambiguity</h3>
@@ -175,7 +175,7 @@ export default function Home() {
 
             <div className="demo-grid demo-grid-after">
               <div className="demo-column">
-                <div className="demo-column-label"><span>03</span> ZERO UPDATES THE EVIDENCE</div>
+                <div className="demo-column-label"><span>03</span> NEW EVIDENCE CHANGES THE PICTURE</div>
                 <div className="shift-list">
                   {updatedRead.map((item) => (
                     <article className={`shift-row ${item.tone}`} key={item.label}>
@@ -186,7 +186,7 @@ export default function Home() {
                 </div>
               </div>
               <div className="demo-column">
-                <div className="demo-column-label"><span>04</span> AKASH ADVANCES THE LOOP</div>
+                <div className="demo-column-label"><span>04</span> THE NEXT STEP GETS SMARTER</div>
                 <div className="next-test-card">
                   <span className="promoted-chip">NEW LEADER · 60%</span>
                   <h3>Interruption sensitivity</h3>
@@ -197,17 +197,19 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="two-audiences">
-            <article><span>FOR PEOPLE</span><h3>A kinder, more useful story.</h3><p>You stop treating one frustrating moment as proof of who you are—and get one small next step grounded in your actual life.</p></article>
-            <article><span>FOR JUDGES</span><h3>A visible self-correcting agent.</h3><p>Every cycle plans, predicts, acts, observes, revises state, and returns a traceable Zero run—not a polished answer pretending to be a loop.</p></article>
+          <div className="learning-promise">
+            <span>WHAT CHANGES OVER TIME</span>
+            <h3>Not just the plan.<br /><em>The story you carry.</em></h3>
+            <p>Proof remembers what happened, notices which explanations survive contact with real life, and brings that understanding into your next check-in. A frustrating moment becomes evidence—not identity.</p>
           </div>
 
-          <div className="sponsor-roles" aria-label="Sponsor architecture">
-            <div><strong>Pomerium</strong><span>Protects the private agent boundary and verifies every app-to-agent request.</span></div>
-            <i>→</i>
-            <div><strong>Akash</strong><span>Runs the persistent loop, selects hypotheses, records predictions, and advances experiments.</span></div>
-            <i>→</i>
-            <div><strong>Zero.xyz</strong><span>Generates competing explanations and updates their confidence from new evidence.</span></div>
+          <div className="product-foundation" aria-label="Proof technology foundation">
+            <span>PRIVATE BY DESIGN</span>
+            <div><strong>Pomerium</strong><small>protected access</small></div>
+            <i>·</i>
+            <div><strong>Akash</strong><small>persistent learning loop</small></div>
+            <i>·</i>
+            <div><strong>Zero.xyz</strong><small>traceable reasoning</small></div>
           </div>
         </div>
       </section>
@@ -304,14 +306,14 @@ export default function Home() {
       <section className="final-cta" id="demo">
         <div className="cta-orbit orbit-one" /><div className="cta-orbit orbit-two" />
         <div className="shell cta-inner">
-          <div className="eyebrow light"><span /> Built for the Loop Engineering Hackathon</div>
+          <div className="eyebrow light"><span /> A smaller next step. A smarter loop.</div>
           <h2>One goal. One experiment.<br /><em>One smarter next step.</em></h2>
           <p>See how Proof turns a real behavior challenge into a self-correcting loop—and changes its hypothesis when the evidence changes.</p>
           <div className="demo-actions">
             <a className="demo-primary" href="/experiment">Run an experiment <span aria-hidden="true">↗</span></a>
             <a className="demo-secondary" href="#loop">Walk through the loop <span aria-hidden="true">↓</span></a>
           </div>
-          <small>Hackathon prototype · July 2026 · San Francisco</small>
+          <small>Private by design · Built to learn with you</small>
         </div>
       </section>
 
