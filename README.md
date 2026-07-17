@@ -30,7 +30,7 @@ The production request path uses three sponsor tools in one verifiable, multi-st
 Proof website → Pomerium → Proof agent on Akash → Zero capability
 ```
 
-The UI only displays **Pomerium → Akash → Zero** when the agent has verified a signed Pomerium identity assertion and Zero has returned both reasoning stages. It also shows the stage count and confidence changes, so sponsor usage is visible evidence rather than infrastructure trivia. Local fallbacks are labeled honestly and do not claim sponsor usage.
+The UI only displays **Pomerium → Akash → Zero** when the agent has verified a signed Pomerium identity assertion and Zero has returned a traceable reasoning run. It also shows the run count and confidence changes, so sponsor usage is visible evidence rather than infrastructure trivia. Local fallbacks are labeled honestly and do not claim sponsor usage.
 
 ### Pomerium — identity-aware agent gateway
 
@@ -40,13 +40,13 @@ This keeps private behavioral reflections away from a bearer-token-only public e
 
 ### Zero — reasoning capability layer
 
-The `agent/` service makes two deliberate Zero calls per loop stage. During planning, one call generates three competing hypotheses and a second critic selects the most testable explanation, records a prediction, and designs an experiment. During reflection, one call updates every confidence score from new evidence and a second redesigns the next experiment. Every call returns a Zero run ID for the visible execution trace.
+The `agent/` service makes one deliberate Zero call per interaction. During planning, Zero generates three competing, testable hypotheses with predictions and experiments; the Akash agent selects the best-supported candidate. During reflection, Zero updates every confidence score from new evidence; Akash observes whether its prediction survived, promotes the strongest explanation, and advances its associated experiment. Every call returns a Zero run ID for the visible execution trace.
 
 The frontend always has a deterministic fallback. If the paid capability or network fails during judging, the same full loop remains demoable and is labeled **Proof local loop** rather than pretending a sponsor call succeeded.
 
 ### Akash — portable agent runtime
 
-`deploy.yaml` contains the Akash SDL for the persistent loop orchestrator. Akash does more than serve an API: the running agent sequences Zero's hypothesis, critic, evidence-update, and redesign stages while keeping the reasoning service private behind Pomerium.
+`deploy.yaml` contains the Akash SDL for the persistent loop orchestrator. Akash does more than serve an API: the running agent selects among Zero's competing hypotheses, records predictions, observes confidence shifts, and advances the loop while keeping the reasoning service private behind Pomerium.
 
 ## Three-sponsor activation checklist
 

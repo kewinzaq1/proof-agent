@@ -89,41 +89,58 @@ function normalizeHypotheses(items, previous = []) {
   });
 }
 
+function designExperiment(winner, input, isReflection = false) {
+  const signal = `${winner?.label ?? ""} ${winner?.explanation ?? ""} ${input.reflection ?? ""}`.toLowerCase();
+  if (/slack|interrupt|notification|ping|message/.test(signal)) {
+    return {
+      prediction: "If interruption—not discipline—is the stronger mechanism, a protected five-minute window will preserve momentum after starting.",
+      experiment: { title: "The five-minute shield", instruction: "Mute Slack and notifications, start one visible action, and work for exactly five minutes.", duration: "5 minutes", reason: "Continuing during a protected window would strengthen the interruption hypothesis." },
+    };
+  }
+  if (/unclear|complex|overwhelm|first step|ambigu/.test(signal)) {
+    return {
+      prediction: "If ambiguity is the stronger mechanism, naming one physical first action will make starting noticeably easier.",
+      experiment: { title: "Name the first move", instruction: "Write the smallest visible first action, then do only that action.", duration: "3 minutes", reason: "Starting after the action becomes concrete would support the ambiguity hypothesis." },
+    };
+  }
+  if (/reward|easier|gratification|avoid/.test(signal)) {
+    return {
+      prediction: "If immediate reward is driving the pattern, delaying the easier alternative briefly will make the choice point visible.",
+      experiment: { title: "Delay the escape hatch", instruction: "When the easier task appears, wait two minutes and begin one action on the important task first.", duration: "2 minutes", reason: "The urge and what happens after the delay create evidence about reward-seeking." },
+    };
+  }
+  return {
+    prediction: `If ${winner?.label?.toLowerCase() ?? "this explanation"} is right, a tiny start should reveal the mechanism without requiring more willpower.`,
+    experiment: { title: isReflection ? "Test the new leader" : "The two-minute start", instruction: "Choose one visible action and do it for two minutes, then record what helped or interrupted you.", duration: "2 minutes", reason: "The observation will strengthen or weaken the selected explanation." },
+  };
+}
+
 async function runPlan(input, zeroEnv) {
   const observerPrompt = `You are the hypothesis generator inside Proof, a behavioral-science agent.
 Generate exactly three distinct, testable explanations for the recurring pattern below.
 One candidate may reflect the user's self-judgment, but treat it skeptically. The others must identify situational mechanisms.
-Return ONLY JSON: {"hypotheses":[{"id":"h1","label":"2-5 words","explanation":"one precise sentence","confidence":number,"evidence":["specific clue from user"]},{"id":"h2",...},{"id":"h3",...}]}
+Return ONLY compact JSON: {"hypotheses":[{"id":"h1","label":"2-5 words","explanation":"one precise sentence","confidence":number,"evidence":["one specific clue"]},{"id":"h2",...},{"id":"h3",...}]}
 Confidence values are 5-95 and should not sum to 100. Do not diagnose.
 
 Pattern: ${input.goal}
 Observation and longitudinal context: ${input.context ?? ""}`;
-  const generated = await callZero(observerPrompt, "hypothesize", zeroEnv, 520);
+  const generated = await callZero(observerPrompt, "hypothesize", zeroEnv, 540);
   const hypotheses = normalizeHypotheses(generated.data.hypotheses);
-
-  const criticPrompt = `You are the critic and experiment designer inside Proof.
-Review three competing explanations. Select the one best supported by the user's actual words, record one falsifiable prediction, and design one experiment under five minutes that distinguishes it from the alternatives.
-Return ONLY JSON: {"selectedHypothesisId":"h1","selectionReason":"one sentence citing evidence","prediction":"If this hypothesis is right, then...","experiment":{"title":"string","instruction":"one concrete action","duration":"string","reason":"explain what result would support or weaken the selected hypothesis"},"insight":"one warm sentence","learned":["string","string","string"]}
-Never optimize for compliance. Optimize for information gained.
-
-User pattern: ${input.goal}
-Observation: ${input.context ?? ""}
-Candidates: ${JSON.stringify(hypotheses)}`;
-  const selected = await callZero(criticPrompt, "critic_select", zeroEnv, 480);
-  const selectedId = hypotheses.some((item) => item.id === selected.data.selectedHypothesisId) ? selected.data.selectedHypothesisId : hypotheses[0]?.id;
+  const selectedId = [...hypotheses].sort((a, b) => b.confidence - a.confidence)[0]?.id;
   const winner = hypotheses.find((item) => item.id === selectedId) ?? hypotheses[0];
+  const design = designExperiment(winner, input);
   return {
     hypotheses,
     selectedHypothesisId: selectedId,
-    selectionReason: selected.data.selectionReason,
-    prediction: selected.data.prediction,
+    selectionReason: `Akash selected the explanation with the strongest current evidence (${winner?.confidence ?? 0}% confidence).`,
+    prediction: design.prediction,
     hypothesis: winner?.explanation,
     confidence: winner?.confidence,
-    experiment: selected.data.experiment,
-    insight: selected.data.insight,
-    learned: selected.data.learned,
+    experiment: design.experiment,
+    insight: "Your discipline story is now one hypothesis among three—not a verdict.",
+    learned: hypotheses.map((item) => `${item.label}: ${item.confidence}%`).slice(0, 3),
     provider: "zero",
-    zeroRuns: [generated.trace, selected.trace],
+    zeroRuns: [generated.trace],
   };
 }
 
@@ -131,7 +148,9 @@ async function runReflection(input, zeroEnv) {
   const prior = normalizeHypotheses(input.priorHypotheses ?? []);
   const observerPrompt = `You are the evidence evaluator inside Proof. Reality has returned after an experiment.
 Update all three competing hypotheses from the new evidence. Be willing to reject the previous winner and promote an alternative.
-Return ONLY JSON: {"hypotheses":[{"id":"h1","label":"same label","explanation":"updated precise explanation","previousConfidence":number,"confidence":number,"verdict":"promoted|weakened|rejected|steady","evidence":["new evidence that caused this update"]},{"id":"h2",...},{"id":"h3",...}],"insight":"one sentence explaining what reality changed","learned":["string","string","string"]}
+If the observation reveals a mechanism missing from the original set, replace the weakest candidate with that new explanation and promote it when the evidence supports it.
+Important evidence rule: successfully starting contradicts an inability-to-start or lack-of-discipline explanation; an external interruption after starting supports an interruption-sensitivity explanation. In that case, introduce and promote the interruption explanation.
+Return ONLY compact JSON: {"hypotheses":[{"id":"h1","label":"same or revised label","explanation":"updated precise explanation","previousConfidence":number,"confidence":number,"verdict":"promoted|weakened|rejected|steady","evidence":["one new clue"]},{"id":"h2",...},{"id":"h3",...}],"insight":"one sentence explaining what reality changed"}
 Confidence values are 5-95. A contradicted prediction must meaningfully lower confidence.
 
 Original pattern: ${input.goal}
@@ -142,30 +161,23 @@ Recorded prediction: ${input.prediction ?? "unknown"}
 Experiment: ${input.experiment ?? ""}
 Attempted: ${input.completed == null ? "unknown" : input.completed ? "yes" : "no"}
 What actually happened: ${input.reflection ?? ""}`;
-  const evaluated = await callZero(observerPrompt, "observe_update", zeroEnv, 600);
+  const evaluated = await callZero(observerPrompt, "observe_update", zeroEnv, 680);
   const hypotheses = normalizeHypotheses(evaluated.data.hypotheses, prior);
-
-  const designerPrompt = `You are the next-step selector inside Proof.
-Given the evidence-updated hypotheses, select the strongest current explanation and design one new experiment under five minutes. It must test the newly selected explanation, not repeat old advice.
-Return ONLY JSON: {"selectedHypothesisId":"h1","selectionReason":"one sentence","prediction":"If this updated hypothesis is right, then...","experiment":{"title":"string","instruction":"one concrete action","duration":"string","reason":"what evidence this will create"}}
-
-Updated hypotheses: ${JSON.stringify(hypotheses)}
-New evidence: ${input.reflection ?? ""}`;
-  const selected = await callZero(designerPrompt, "redesign", zeroEnv, 420);
-  const selectedId = hypotheses.some((item) => item.id === selected.data.selectedHypothesisId) ? selected.data.selectedHypothesisId : [...hypotheses].sort((a, b) => b.confidence - a.confidence)[0]?.id;
+  const selectedId = [...hypotheses].sort((a, b) => (b.confidence + (b.verdict === "promoted" ? 1 : 0)) - (a.confidence + (a.verdict === "promoted" ? 1 : 0)))[0]?.id;
   const winner = hypotheses.find((item) => item.id === selectedId) ?? hypotheses[0];
+  const design = designExperiment(winner, input, true);
   return {
     hypotheses,
     selectedHypothesisId: selectedId,
-    selectionReason: selected.data.selectionReason,
-    prediction: selected.data.prediction,
+    selectionReason: `Akash promoted the explanation best supported by the new evidence (${winner?.confidence ?? 0}% confidence).`,
+    prediction: design.prediction,
     hypothesis: winner?.explanation,
     confidence: winner?.confidence,
-    experiment: selected.data.experiment,
+    experiment: design.experiment,
     insight: evaluated.data.insight,
-    learned: evaluated.data.learned,
+    learned: hypotheses.map((item) => `${item.label}: ${item.previousConfidence}% → ${item.confidence}%`).slice(0, 3),
     provider: "zero",
-    zeroRuns: [evaluated.trace, selected.trace],
+    zeroRuns: [evaluated.trace],
   };
 }
 

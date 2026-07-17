@@ -1,6 +1,6 @@
 # Proof agent service
 
-The frontend works without this service, but calls it when `PROOF_AGENT_URL` is configured. The Akash-hosted service orchestrates two Zero reasoning stages for every plan or reflection: generate/evaluate, then select/redesign. The response includes all competing hypotheses, a falsifiable prediction, confidence deltas, and the Zero run IDs.
+The frontend works without this service, but calls it when `PROOF_AGENT_URL` is configured. For each plan or reflection, Zero generates or evidence-updates three competing explanations in one reasoning run. The Akash-hosted agent then selects the strongest candidate, records its prediction, and advances the experiment. The response includes the full hypothesis set, confidence deltas, and the Zero run ID.
 
 ## Required runtime values
 
