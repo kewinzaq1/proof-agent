@@ -26,6 +26,32 @@ type HistoryItem = {
 type LoopStep = "goal" | "context" | "plan" | "checkin" | "update";
 const loopOrder: LoopStep[] = ["goal", "context", "plan", "checkin", "update"];
 const focusOptions = ["work", "energy", "relationships", "sleep", "confidence", "health"];
+const thinkingLines = {
+  profile: [
+    "Remembering where we left the plot…",
+    "Gathering your previous plot twists…",
+    "Putting the thread back on the needle…",
+  ],
+  plan: [
+    "Thinking about you. In a normal, respectful way…",
+    "Looking for the pattern hiding in plain sight…",
+    "Asking your excuses to remain seated…",
+    "Summoning all available willpower. Found three units…",
+    "Turning vague feelings into suspiciously specific clues…",
+  ],
+  reflect: [
+    "Checking what reality had to say…",
+    "Letting the old theory down gently…",
+    "Comparing your plan with life’s unauthorized rewrite…",
+    "Promoting one surprise to useful evidence…",
+    "Updating the story without blaming the protagonist…",
+  ],
+  save: [
+    "Saving this chapter without making it your entire personality…",
+    "Giving future-you some useful context…",
+    "Folding this into the larger plot…",
+  ],
+};
 
 export default function ExperimentClient({ user }: { user: { displayName: string; email: string } }) {
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -159,6 +185,7 @@ export default function ExperimentClient({ user }: { user: { displayName: string
 
   return (
     <main className="experiment-app">
+      {loading && <ThinkingOverlay kind={step === "context" ? "plan" : "reflect"} />}
       <AppHeader profile={profile} onHome={() => setView("home")} />
       <div className="experiment-progress" aria-label={`Step ${currentIndex + 1} of 5`}><i style={{ width: progress }} /></div>
       <section className="experiment-shell">
@@ -235,8 +262,25 @@ export default function ExperimentClient({ user }: { user: { displayName: string
   );
 }
 
+function RotatingThought({ kind }: { kind: keyof typeof thinkingLines }) {
+  const [index, setIndex] = useState(0);
+  useEffect(() => {
+    const timer = window.setInterval(() => setIndex((current) => (current + 1) % thinkingLines[kind].length), 1650);
+    return () => window.clearInterval(timer);
+  }, [kind]);
+  return <p className="thinking-line" aria-live="polite">{thinkingLines[kind][index]}</p>;
+}
+
+function ThinkingVisual() {
+  return <div className="thinking-visual" aria-hidden="true"><span>✦</span><i /><i /><i /></div>;
+}
+
+function ThinkingOverlay({ kind }: { kind: "plan" | "reflect" | "save" }) {
+  return <div className="thinking-overlay" role="status" aria-label="Proof is working"><div className="thinking-card"><div className="thinking-kicker">PROOF IS ON IT</div><ThinkingVisual /><RotatingThought kind={kind} /><div className="thinking-dots" aria-hidden="true"><i /><i /><i /></div><small>Usually just a few seconds. Existential breakthroughs may vary.</small></div></div>;
+}
+
 function LoadingScreen() {
-  return <main className="loading-screen"><div className="brand"><span className="brand-mark">P</span><span>Proof</span></div><p>Gathering the thread…</p></main>;
+  return <main className="loading-screen"><div className="brand"><span className="brand-mark">P</span><span>Proof</span></div><ThinkingVisual /><RotatingThought kind="profile" /></main>;
 }
 
 function AppHeader({ profile, onHome }: { profile: Profile; onHome?: () => void }) {
@@ -268,6 +312,7 @@ function OnboardingWizard({ user, onComplete }: { user: { displayName: string; e
   const canContinue = [displayName.trim().length > 1 && !!lifeSeason, focusAreas.length > 0, lifeSnapshot.trim().length > 20 && desiredShift.trim().length > 10, !!checkInRhythm][step];
 
   return <main className="onboarding-app">
+    {saving && <ThinkingOverlay kind="save" />}
     <header className="onboarding-header"><a className="brand" href="/"><span className="brand-mark">P</span><span>Proof</span></a><span>Getting to know you · {step + 1} of 4</span></header>
     <div className="onboarding-progress"><i style={{ width: `${((step + 1) / 4) * 100}%` }} /></div>
     <section className="onboarding-card">
