@@ -7,6 +7,7 @@ export type CoachRequest = {
   experiment?: string;
   reflection?: string;
   completed?: boolean;
+  checkInId?: string;
 };
 
 export type CoachResponse = {
@@ -21,6 +22,7 @@ export type CoachResponse = {
   insight?: string;
   learned?: string[];
   provider: "proof" | "zero";
+  checkInId?: string;
   sponsorStack?: {
     access: "pomerium";
     compute: "akash";

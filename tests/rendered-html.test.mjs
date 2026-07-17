@@ -31,29 +31,15 @@ test("server-renders the Proof landing page and live prototype link", async () =
   assert.doesNotMatch(html, /codex-preview|react-loading-skeleton/i);
 });
 
-test("server-renders the interactive experiment shell", async () => {
+test("protects the personal experiment area with ChatGPT sign-in", async () => {
   const response = await request("/experiment");
-  assert.equal(response.status, 200);
-  const html = await response.text();
-  assert.match(html, /<title>Run an experiment — Proof<\/title>/i);
-  assert.match(html, /What’s one thing you want to/);
-  assert.match(html, /EVIDENCE LOG/);
-  assert.match(html, /Live experiment/);
+  assert.ok([302, 307, 308].includes(response.status));
+  assert.match(response.headers.get("location") ?? "", /\/signin-with-chatgpt\?return_to=/);
 });
 
-test("coach API returns a complete deterministic fallback loop", async () => {
-  const response = await request("/api/coach", {
-    method: "POST",
-    headers: { "content-type": "application/json", accept: "application/json" },
-    body: JSON.stringify({
-      stage: "plan",
-      goal: "stop scrolling before bed",
-      context: "After dinner I sit on the couch and reach for my phone.",
-    }),
-  });
-
-  assert.equal(response.status, 200);
-  const result = await response.json();
+test("coach fallback still returns a complete loop", async () => {
+  const { runLocalCoach } = await import("../lib/coach.ts");
+  const result = runLocalCoach({ stage: "plan", goal: "stop scrolling before bed", context: "After dinner I reach for my phone." });
   assert.equal(result.provider, "proof");
   assert.match(result.hypothesis, /scrolling|transition/i);
   assert.equal(typeof result.confidence, "number");

@@ -66,16 +66,16 @@ export default function Home() {
           <div className="eyebrow"><span /> Personal growth, grounded in evidence</div>
           <h1>Stop trying to fix yourself.<br /><em>Start learning yourself.</em></h1>
           <p className="hero-lede">
-            Proof turns one thing you want to change into a series of tiny,
-            personalized experiments—then adapts to what real life teaches you.
+            Proof gets to know the chapter you’re in, reflects what life is teaching you,
+            and remembers the thread so every check-in begins deeper than the last.
           </p>
           <div className="hero-actions">
-            <a className="button" href="/experiment">Run the live prototype <span aria-hidden="true">→</span></a>
+            <a className="button" href="/experiment">Begin your story <span aria-hidden="true">→</span></a>
             <a className="text-link" href="#loop">See how the loop works <span aria-hidden="true">↓</span></a>
           </div>
           <div className="trust-line">
             <span className="trust-faces" aria-hidden="true"><i>K</i><i>M</i><i>A</i></span>
-            <span>Built for thoughtful people who are tired of generic advice.</span>
+            <span>A private, ongoing reflection—not another one-off AI conversation.</span>
           </div>
         </div>
 
