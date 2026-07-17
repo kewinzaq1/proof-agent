@@ -45,6 +45,18 @@ const beliefs = [
   { label: "Notifications break momentum", value: "71%", change: "New" },
 ];
 
+const firstRead = [
+  { label: "Task ambiguity", value: 70, note: "Strongest signal", tone: "violet" },
+  { label: "Immediate rewards", value: 20, note: "Possible", tone: "yellow" },
+  { label: "Lack of discipline", value: 10, note: "Your original story", tone: "coral" },
+];
+
+const updatedRead = [
+  { label: "Task ambiguity", before: 70, after: 50, verdict: "WEAKENED", tone: "violet" },
+  { label: "Interruption sensitivity", before: 5, after: 60, verdict: "PROMOTED", tone: "yellow" },
+  { label: "Immediate rewards", before: 20, after: 20, verdict: "STEADY", tone: "coral" },
+];
+
 export default function Home() {
   return (
     <main>
@@ -54,9 +66,9 @@ export default function Home() {
           <span>Proof</span>
         </a>
         <div className="nav-links">
+          <a href="#proof">Live proof</a>
           <a href="#problem">Why Proof</a>
-          <a href="#loop">The loop</a>
-          <a href="#principles">Principles</a>
+          <a href="#loop">How it learns</a>
         </div>
         <a className="button button-small" href="/experiment">Run an experiment</a>
       </nav>
@@ -71,7 +83,7 @@ export default function Home() {
           </p>
           <div className="hero-actions">
             <a className="button" href="/experiment">Begin your story <span aria-hidden="true">→</span></a>
-            <a className="text-link" href="#loop">See how the loop works <span aria-hidden="true">↓</span></a>
+            <a className="text-link" href="#proof">Watch it change its mind <span aria-hidden="true">↓</span></a>
           </div>
           <div className="trust-line">
             <span className="trust-faces" aria-hidden="true"><i>K</i><i>M</i><i>A</i></span>
@@ -112,8 +124,96 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="feature-proof section" id="proof">
+        <div className="shell">
+          <div className="section-label">01 / THE FEATURE, END TO END</div>
+          <div className="feature-intro">
+            <h2>It doesn’t defend its advice.<br /><em>It updates its beliefs.</em></h2>
+            <p>Proof holds several explanations at once, chooses one to test, records what should happen, and changes course when real life disagrees.</p>
+          </div>
+
+          <div className="agent-demo">
+            <div className="agent-demo-top">
+              <div><span className="live-dot" /> Verified production run</div>
+              <span>REAL INPUT → TESTABLE CHANGE</span>
+            </div>
+
+            <div className="user-claim">
+              <span className="claim-avatar">YOU</span>
+              <div><small>THE STORY I’M TELLING MYSELF</small><blockquote>“I avoid important work because I lack discipline.”</blockquote></div>
+            </div>
+
+            <div className="demo-grid demo-grid-before">
+              <div className="demo-column">
+                <div className="demo-column-label"><span>01</span> ZERO GENERATES COMPETING EXPLANATIONS</div>
+                <div className="candidate-list">
+                  {firstRead.map((item, index) => (
+                    <article className={`candidate-card ${item.tone} ${index === 0 ? "selected" : ""}`} key={item.label}>
+                      <div><strong>{item.label}</strong><small>{item.note}</small></div>
+                      <span>{item.value}%</span>
+                      <i><b style={{ width: `${item.value}%` }} /></i>
+                    </article>
+                  ))}
+                </div>
+              </div>
+              <div className="demo-column">
+                <div className="demo-column-label"><span>02</span> AKASH CHOOSES WHAT TO TEST</div>
+                <div className="prediction-card">
+                  <small>SELECTED HYPOTHESIS</small>
+                  <h3>Task ambiguity</h3>
+                  <p><strong>Prediction:</strong> If ambiguity is the mechanism, naming one physical first action will make starting easier.</p>
+                  <div className="mini-experiment"><span>THE 3-MINUTE TEST</span><p>Write the smallest visible first action. Then do only that.</p></div>
+                </div>
+              </div>
+            </div>
+
+            <div className="reality-break">
+              <span>REALITY RETURNS</span>
+              <blockquote>“I started, but Slack interrupted me.”</blockquote>
+              <i>↓</i>
+            </div>
+
+            <div className="demo-grid demo-grid-after">
+              <div className="demo-column">
+                <div className="demo-column-label"><span>03</span> ZERO UPDATES THE EVIDENCE</div>
+                <div className="shift-list">
+                  {updatedRead.map((item) => (
+                    <article className={`shift-row ${item.tone}`} key={item.label}>
+                      <div><strong>{item.label}</strong><small>{item.verdict}</small></div>
+                      <div className="shift-numbers"><del>{item.before}%</del><span>→</span><b>{item.after}%</b></div>
+                    </article>
+                  ))}
+                </div>
+              </div>
+              <div className="demo-column">
+                <div className="demo-column-label"><span>04</span> AKASH ADVANCES THE LOOP</div>
+                <div className="next-test-card">
+                  <span className="promoted-chip">NEW LEADER · 60%</span>
+                  <h3>Interruption sensitivity</h3>
+                  <p>The task wasn’t blocked by willpower. Momentum broke after an external interruption.</p>
+                  <div><small>NEXT EXPERIMENT</small><strong>Mute Slack. Protect five minutes. See if momentum survives.</strong></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="two-audiences">
+            <article><span>FOR PEOPLE</span><h3>A kinder, more useful story.</h3><p>You stop treating one frustrating moment as proof of who you are—and get one small next step grounded in your actual life.</p></article>
+            <article><span>FOR JUDGES</span><h3>A visible self-correcting agent.</h3><p>Every cycle plans, predicts, acts, observes, revises state, and returns a traceable Zero run—not a polished answer pretending to be a loop.</p></article>
+          </div>
+
+          <div className="sponsor-roles" aria-label="Sponsor architecture">
+            <div><strong>Pomerium</strong><span>Protects the private agent boundary and verifies every app-to-agent request.</span></div>
+            <i>→</i>
+            <div><strong>Akash</strong><span>Runs the persistent loop, selects hypotheses, records predictions, and advances experiments.</span></div>
+            <i>→</i>
+            <div><strong>Zero.xyz</strong><span>Generates competing explanations and updates their confidence from new evidence.</span></div>
+          </div>
+        </div>
+      </section>
+
       <section className="problem shell section" id="problem">
-        <div className="section-label">01 / THE PROBLEM</div>
+        <div className="section-label">02 / THE PROBLEM</div>
         <div className="problem-grid">
           <div>
             <h2>More advice isn’t<br />the answer.</h2>
@@ -137,7 +237,7 @@ export default function Home() {
 
       <section className="loop-section section" id="loop">
         <div className="shell">
-          <div className="section-label light">02 / THE SELF-CORRECTING LOOP</div>
+          <div className="section-label light">03 / THE SELF-CORRECTING LOOP</div>
           <div className="loop-intro">
             <h2>A coach that changes<br />its mind.</h2>
             <p>Proof doesn’t hand you a plan and disappear. It observes, learns, and redesigns the next step based on the evidence you create together.</p>
@@ -159,7 +259,7 @@ export default function Home() {
 
       <section className="evidence shell section">
         <div className="evidence-copy">
-          <div className="section-label">03 / WHAT GETS BETTER</div>
+          <div className="section-label">04 / WHAT GETS BETTER</div>
           <h2>Your beliefs become<br />less certain.<br /><em>Your actions become<br />more useful.</em></h2>
           <p>Proof remembers patterns, not transcripts. Over time, it builds a living model of what helps you move—and what gets in the way.</p>
           <ul>
@@ -184,7 +284,7 @@ export default function Home() {
 
       <section className="principles section" id="principles">
         <div className="shell principles-inner">
-          <div className="section-label">04 / BUILT DIFFERENTLY</div>
+          <div className="section-label">05 / BUILT DIFFERENTLY</div>
           <h2>Less self-improvement.<br /><em>More self-discovery.</em></h2>
           <div className="principle-grid">
             <article><strong>01</strong><h3>Evidence over motivation.</h3><p>You don’t need to feel ready. You need a small enough experiment to begin.</p></article>

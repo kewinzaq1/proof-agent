@@ -28,6 +28,11 @@ test("server-renders the Proof landing page and live prototype link", async () =
   assert.match(html, /Stop trying to fix yourself/);
   assert.match(html, /href="\/experiment"/);
   assert.match(html, /THE SELF-CORRECTING LOOP/);
+  assert.match(html, /Verified production run/);
+  assert.match(html, /Interruption sensitivity/);
+  assert.match(html, /Pomerium/);
+  assert.match(html, /Akash/);
+  assert.match(html, /Zero\.xyz/);
   assert.doesNotMatch(html, /codex-preview|react-loading-skeleton/i);
 });
 
