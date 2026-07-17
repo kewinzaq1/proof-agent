@@ -33,14 +33,20 @@ button, input { font: inherit; }
 
 .hero { position: relative; min-height: 760px; display: grid; grid-template-columns: 1.07fr .83fr; gap: 74px; align-items: center; padding-block: 78px 104px; }
 .hero::before { content: ''; position: absolute; z-index: -1; width: 430px; height: 430px; left: -320px; top: 80px; border: 70px solid var(--green); border-radius: 50%; }
+.hero-copy { position: relative; z-index: 2; padding: 38px 40px 42px; border: 3px solid var(--ink); background: var(--ink); color: var(--white); box-shadow: 14px 14px 0 var(--lime); }
 .eyebrow { display: inline-flex; align-items: center; gap: 10px; padding: 9px 12px; background: var(--green); color: white; font-size: 9px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
 .eyebrow > span { width: 7px; height: 7px; border-radius: 50%; background: var(--lime); }
 .hero h1, .section h2, .loop-intro h2, .principles h2, .final-cta h2 { margin: 25px 0; font-size: clamp(60px, 6.4vw, 94px); line-height: .89; letter-spacing: -.075em; font-weight: 650; }
 h1 em, h2 em { font-family: var(--font-instrument-serif), Georgia, serif; font-weight: 400; color: var(--green); }
-.hero-lede { max-width: 620px; margin: 0; font-size: 18px; line-height: 1.55; color: #514d47; }
+.hero h1 { color: var(--white); opacity: 1; }
+.hero h1 em { color: var(--lime); }
+.hero-lede { max-width: 620px; margin: 0; font-size: 18px; line-height: 1.55; color: #d5d1ca; }
 .hero-actions { display: flex; align-items: center; gap: 30px; margin-top: 38px; }
+.hero-copy .button { border-color: var(--lime); background: var(--lime); color: var(--ink); }
 .text-link { padding-block: 10px; border-bottom: 2px solid var(--ink); font-size: 11px; font-weight: 800; }
+.hero-copy .text-link { border-color: var(--white); color: var(--white); }
 .trust-line { display: flex; align-items: center; gap: 14px; margin-top: 46px; font-size: 10px; font-weight: 700; color: #645f57; }
+.hero-copy .trust-line { color: #c7c2ba; }
 .trust-faces { display: flex; }
 .trust-faces i { width: 29px; height: 29px; margin-left: -6px; display: grid; place-items: center; border: 2px solid var(--paper); border-radius: 50%; background: var(--lime); color: var(--ink); font-size: 9px; font-style: normal; font-weight: 800; }
 .trust-faces i:first-child { margin-left: 0; background: var(--coral); }
@@ -199,6 +205,7 @@ h1 em, h2 em { font-family: var(--font-instrument-serif), Georgia, serif; font-w
   .nav { height: 72px; }
   .button-small { padding-inline: 12px; font-size: 9px; box-shadow: 4px 4px 0 var(--coral); }
   .hero { min-height: auto; padding-block: 58px 88px; }
+  .hero-copy { padding: 28px 24px 32px; box-shadow: 8px 8px 0 var(--lime); }
   .hero h1 { font-size: 57px; }
   .hero-lede { font-size: 16px; }
   .hero-actions { align-items: stretch; flex-direction: column; }
