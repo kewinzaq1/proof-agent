@@ -58,7 +58,7 @@ export default function Home() {
           <a href="#loop">The loop</a>
           <a href="#principles">Principles</a>
         </div>
-        <a className="button button-small" href="#join">Join the early access</a>
+        <a className="button button-small" href="#demo">View the demo</a>
       </nav>
 
       <section className="hero shell" id="top">
@@ -70,7 +70,7 @@ export default function Home() {
             personalized experiments—then adapts to what real life teaches you.
           </p>
           <div className="hero-actions">
-            <a className="button" href="#join">Start your first experiment <span aria-hidden="true">→</span></a>
+            <a className="button" href="#demo">See the prototype <span aria-hidden="true">→</span></a>
             <a className="text-link" href="#loop">See how the loop works <span aria-hidden="true">↓</span></a>
           </div>
           <div className="trust-line">
@@ -201,18 +201,17 @@ export default function Home() {
         <p>That means you don’t need the perfect plan. You only need the next honest test.</p>
       </section>
 
-      <section className="final-cta" id="join">
+      <section className="final-cta" id="demo">
         <div className="cta-orbit orbit-one" /><div className="cta-orbit orbit-two" />
         <div className="shell cta-inner">
-          <div className="eyebrow light"><span /> Early access is opening soon</div>
-          <h2>Become your own scientist.<br /><em>Not your own critic.</em></h2>
-          <p>Bring one thing you want to change. Proof will help you design the first tiny experiment.</p>
-          <form className="signup" action="#" method="get">
-            <label className="sr-only" htmlFor="email">Email address</label>
-            <input id="email" name="email" type="email" placeholder="you@company.com" required />
-            <button type="submit">Request early access <span aria-hidden="true">→</span></button>
-          </form>
-          <small>No spam. No motivational quotes. Just one useful next step.</small>
+          <div className="eyebrow light"><span /> Built for the Loop Engineering Hackathon</div>
+          <h2>One goal. One experiment.<br /><em>One smarter next step.</em></h2>
+          <p>See how Proof turns a real behavior challenge into a self-correcting loop—and changes its hypothesis when the evidence changes.</p>
+          <div className="demo-actions">
+            <a className="demo-primary" href="#top">Explore the prototype <span aria-hidden="true">↗</span></a>
+            <a className="demo-secondary" href="#loop">Walk through the loop <span aria-hidden="true">↓</span></a>
+          </div>
+          <small>Hackathon prototype · July 2026 · San Francisco</small>
         </div>
       </section>
 

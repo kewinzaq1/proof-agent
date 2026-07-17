@@ -142,10 +142,11 @@ h1 em, h2 em { font-family: Georgia, 'Times New Roman', serif; font-weight: 400;
 .final-cta h2 { margin: 27px 0 23px; font-size: clamp(50px, 6vw, 78px); }
 .final-cta h2 em { color: var(--mint); }
 .final-cta p { max-width: 570px; margin: 0 auto; color: #afc1bb; font-size: 16px; line-height: 1.65; }
-.signup { max-width: 555px; margin: 36px auto 15px; display: grid; grid-template-columns: 1fr auto; padding: 5px; border-radius: 4px; background: white; }
-.signup input { width: 100%; min-width: 0; padding: 0 17px; border: 0; outline: 0; background: transparent; color: var(--ink); font-size: 13px; }
-.signup button { min-height: 50px; padding: 0 20px; border: 0; border-radius: 2px; background: var(--lime); color: var(--ink); font-size: 11px; font-weight: 800; cursor: pointer; }
-.signup button span { margin-left: 20px; }
+.demo-actions { display: flex; justify-content: center; gap: 12px; margin: 38px auto 18px; }
+.demo-actions a { min-height: 52px; padding: 0 22px; display: inline-flex; align-items: center; justify-content: center; gap: 24px; border-radius: 3px; font-size: 11px; font-weight: 800; transition: transform .2s ease, background .2s ease; }
+.demo-actions a:hover { transform: translateY(-2px); }
+.demo-primary { background: var(--lime); color: var(--ink); }
+.demo-secondary { border: 1px solid #527269; color: #d8e5e0; }
 .final-cta small { color: #718f86; font-size: 9px; }
 .cta-orbit { position: absolute; border: 1px solid rgba(211,245,229,.1); border-radius: 50%; }
 .orbit-one { width: 700px; height: 700px; left: -420px; top: -180px; }
@@ -192,8 +193,7 @@ h1 em, h2 em { font-family: Georgia, 'Times New Roman', serif; font-weight: 400;
   .belief-row { grid-template-columns: 1fr 38px 40px; }
   .principle-grid { border-left: 0; }
   .principle-grid article { border-left: 1px solid #c9c9c2; }
-  .signup { grid-template-columns: 1fr; gap: 6px; background: transparent; }
-  .signup input { min-height: 52px; border-radius: 2px; background: white; }
+  .demo-actions { align-items: stretch; flex-direction: column; }
   .footer > div { flex-wrap: wrap; justify-content: center; }
 }
 
