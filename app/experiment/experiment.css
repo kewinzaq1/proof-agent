@@ -65,6 +65,7 @@
 .result-topline { display: flex; justify-content: space-between; align-items: center; }
 .provider-badge { padding: 9px 11px; border: 1px solid var(--flow-ink); background: white; color: var(--flow-ink); font: 800 8px/1 var(--font-geist-mono),monospace; }
 .provider-badge.zero { background: var(--flow-acid); }
+.provider-badge.sponsor-stack { border-color: var(--flow-ink); background: linear-gradient(90deg,var(--flow-lilac),var(--flow-acid),#ffd8d1); box-shadow: 4px 4px 0 var(--flow-ink); }
 .result-hypothesis { margin-top: 42px; padding: 28px; display: flex; gap: 20px; border: 3px solid var(--flow-ink); background: var(--flow-lilac); box-shadow: 10px 10px 0 var(--flow-violet); }
 .result-hypothesis > span { color: var(--flow-violet); font-size: 28px; }
 .result-hypothesis small,.learning-banner small { color: #3f2db5; font: 800 8px/1 var(--font-geist-mono),monospace; letter-spacing: .11em; }

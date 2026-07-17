@@ -12,6 +12,10 @@ services:
     env:
       - ZERO_CAPABILITY_ID=cap_MqjItdttzo4ViiV9uBkZC
       - PROOF_WEB_ORIGIN=https://proof-personal-experiments.kewinszlezingier.chatgpt.site
+      - REQUIRE_POMERIUM=true
+      - POMERIUM_JWKS_URL=https://authenticate.your-starter-domain.pomerium.app/.well-known/pomerium/jwks.json
+      - POMERIUM_ISSUER=your-route.your-starter-domain.pomerium.app
+      - POMERIUM_AUDIENCE=your-route.your-starter-domain.pomerium.app
 
 profiles:
   compute:

@@ -21,6 +21,12 @@ export type CoachResponse = {
   insight?: string;
   learned?: string[];
   provider: "proof" | "zero";
+  sponsorStack?: {
+    access: "pomerium";
+    compute: "akash";
+    reasoning: "zero";
+    verified: boolean;
+  };
 };
 
 type Pattern = {

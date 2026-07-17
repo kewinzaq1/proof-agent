@@ -1,11 +1,17 @@
 import { createServer } from "node:http";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
+import { createRemoteJWKSet, jwtVerify } from "jose";
 
 const execFileAsync = promisify(execFile);
 const port = Number(process.env.PORT ?? 8787);
 const capability = process.env.ZERO_CAPABILITY_ID ?? "cap_MqjItdttzo4ViiV9uBkZC";
 const token = process.env.PROOF_AGENT_TOKEN;
+const requirePomerium = process.env.REQUIRE_POMERIUM === "true";
+const pomeriumJwksUrl = process.env.POMERIUM_JWKS_URL;
+const pomeriumIssuer = process.env.POMERIUM_ISSUER;
+const pomeriumAudience = process.env.POMERIUM_AUDIENCE;
+const pomeriumJwks = pomeriumJwksUrl ? createRemoteJWKSet(new URL(pomeriumJwksUrl)) : null;
 
 function json(response, status, body) {
   response.writeHead(status, {
@@ -83,16 +89,50 @@ async function callZero(input) {
   return { ...parsed, provider: "zero", zeroRunId: run.runId };
 }
 
+async function verifyPomerium(request) {
+  if (!requirePomerium) return null;
+  if (!pomeriumJwks || !pomeriumIssuer || !pomeriumAudience) {
+    throw new Error("Pomerium verification is required but its JWKS, issuer, or audience is missing");
+  }
+
+  const assertion = request.headers["x-pomerium-jwt-assertion"];
+  if (typeof assertion !== "string") throw new Error("Missing Pomerium identity assertion");
+
+  const { payload } = await jwtVerify(assertion, pomeriumJwks, {
+    issuer: pomeriumIssuer,
+    audience: pomeriumAudience,
+  });
+  return payload;
+}
+
 createServer(async (request, response) => {
   if (request.method === "OPTIONS") return json(response, 204, {});
   if (request.url === "/health") return json(response, 200, { ok: true, service: "proof-agent", provider: "zero" });
   if (request.url !== "/coach" || request.method !== "POST") return json(response, 404, { error: "Not found" });
-  if (token && request.headers.authorization !== `Bearer ${token}`) return json(response, 401, { error: "Unauthorized" });
+  if (token && request.headers["x-proof-agent-token"] !== token) return json(response, 401, { error: "Unauthorized" });
+
+  let identity;
+  try {
+    identity = await verifyPomerium(request);
+  } catch (error) {
+    console.error("Pomerium verification failed", error instanceof Error ? error.message : error);
+    return json(response, 401, { error: "A verified Pomerium service identity is required." });
+  }
 
   try {
     const input = await readBody(request);
     const result = await callZero(input);
-    return json(response, 200, result);
+    return json(response, 200, {
+      ...result,
+      ...(identity ? {
+        sponsorStack: {
+          access: "pomerium",
+          compute: "akash",
+          reasoning: "zero",
+          verified: true,
+        },
+      } : {}),
+    });
   } catch (error) {
     console.error("Proof agent loop failed", error instanceof Error ? error.message : error);
     return json(response, 502, { error: "The Zero reasoning capability was unavailable." });

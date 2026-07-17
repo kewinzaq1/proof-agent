@@ -21,6 +21,10 @@ export default function ExperimentClient() {
   const currentIndex = stepOrder.indexOf(step);
   const activeResult = update ?? plan;
 
+  function providerLabel(result: CoachResponse) {
+    return result.sponsorStack?.verified ? "Pomerium → Akash → Zero" : result.provider === "zero" ? "✦ Powered by Zero" : "Proof local loop";
+  }
+
   useEffect(() => {
     const saved = window.localStorage.getItem("proof-experiment");
     if (!saved) return;
@@ -142,7 +146,7 @@ export default function ExperimentClient() {
 
           {step === "plan" && plan && (
             <div className="stage-card result-stage">
-              <div className="result-topline"><div className="stage-kicker">HYPOTHESIS · 03</div><span className={`provider-badge ${plan.provider}`}>{plan.provider === "zero" ? "✦ Powered by Zero" : "Proof local loop"}</span></div>
+              <div className="result-topline"><div className="stage-kicker">HYPOTHESIS · 03</div><span className={`provider-badge ${plan.sponsorStack?.verified ? "sponsor-stack" : plan.provider}`}>{providerLabel(plan)}</span></div>
               <h1>Here’s what might be <em>actually happening.</em></h1>
               <div className="result-hypothesis"><span>◇</span><div><small>WORKING HYPOTHESIS</small><p>{plan.hypothesis}</p><div className="result-confidence"><i><b style={{ width: `${plan.confidence}%` }} /></i>{plan.confidence}% confidence</div></div></div>
               <div className="result-experiment">
@@ -179,7 +183,7 @@ export default function ExperimentClient() {
 
           {step === "update" && update && plan && (
             <div className="stage-card result-stage update-stage">
-              <div className="result-topline"><div className="stage-kicker">UPDATE · 05</div><span className={`provider-badge ${update.provider}`}>{update.provider === "zero" ? "✦ Powered by Zero" : "Proof local loop"}</span></div>
+              <div className="result-topline"><div className="stage-kicker">UPDATE · 05</div><span className={`provider-badge ${update.sponsorStack?.verified ? "sponsor-stack" : update.provider}`}>{providerLabel(update)}</span></div>
               <h1>The plan changed.<br /><em>You didn’t fail.</em></h1>
               <div className="learning-banner"><span>✦</span><div><small>WHAT THE LOOP LEARNED</small><p>{update.insight}</p></div></div>
               <div className="belief-shift">

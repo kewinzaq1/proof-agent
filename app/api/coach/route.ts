@@ -15,7 +15,12 @@ export async function POST(request: Request) {
         method: "POST",
         headers: {
           "content-type": "application/json",
-          ...(process.env.PROOF_AGENT_TOKEN ? { authorization: `Bearer ${process.env.PROOF_AGENT_TOKEN}` } : {}),
+          ...(process.env.POMERIUM_SERVICE_ACCOUNT_JWT
+            ? { authorization: `Bearer Pomerium-${process.env.POMERIUM_SERVICE_ACCOUNT_JWT}` }
+            : {}),
+          ...(process.env.PROOF_AGENT_TOKEN
+            ? { "x-proof-agent-token": process.env.PROOF_AGENT_TOKEN }
+            : {}),
         },
         body: JSON.stringify(input),
         signal: AbortSignal.timeout(15_000),
