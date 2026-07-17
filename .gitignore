@@ -5,6 +5,7 @@
 **/node_modules/
 /compose.yaml
 /deploy.live.yaml
+/pomerium.service-account.jwt
 /.pnp
 .pnp.*
 .yarn/*

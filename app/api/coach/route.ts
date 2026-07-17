@@ -23,11 +23,17 @@ export async function POST(request: Request) {
             : {}),
         },
         body: JSON.stringify(input),
-        signal: AbortSignal.timeout(15_000),
+        signal: AbortSignal.timeout(25_000),
       });
 
       if (response.ok) {
         const result = (await response.json()) as CoachResponse;
+        if (typeof result.confidence === "number") {
+          result.confidence = Math.max(
+            0,
+            Math.min(100, Math.round(result.confidence <= 1 ? result.confidence * 100 : result.confidence)),
+          );
+        }
         return NextResponse.json(result);
       }
     } catch {

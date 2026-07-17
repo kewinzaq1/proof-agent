@@ -52,21 +52,14 @@ Reflection: ${input.reflection ?? ""}`;
 
 async function callZero(input) {
   const body = {
-    input: {
-      type: "http",
-      method: "POST",
-      bodyType: "json",
-      body: {
-        model: "google-gemma-3-27b-it",
-        stream: false,
-        messages: [
-          { role: "system", content: "Return only strict JSON. Do not wrap it in markdown." },
-          { role: "user", content: promptFor(input) },
-        ],
-        max_tokens: 500,
-        temperature: 0.35,
-      },
-    },
+    model: "openai-gpt-4o-mini-2024-07-18",
+    stream: false,
+    messages: [
+      { role: "system", content: "Return only strict JSON. Do not wrap it in markdown." },
+      { role: "user", content: promptFor(input) },
+    ],
+    max_tokens: 320,
+    temperature: 0.25,
   };
 
   const { stdout } = await execFileAsync("zero", [
@@ -76,7 +69,7 @@ async function callZero(input) {
     "--json",
     "--data", JSON.stringify(body),
   ], {
-    timeout: 20_000,
+    timeout: 60_000,
     maxBuffer: 1024 * 1024,
     env: process.env,
   });

@@ -1,6 +1,10 @@
 ---
 version: "2.0"
 
+endpoints:
+  proof-ip:
+    kind: ip
+
 services:
   pomerium:
     image: pomerium/pomerium:v0.32.8
@@ -10,12 +14,13 @@ services:
         proto: tcp
         to:
           - global: true
+            ip: proof-ip
     env:
       - POMERIUM_ZERO_TOKEN=replace-with-pomerium-cluster-token
       - XDG_CACHE_HOME=/var/cache
 
   proof-agent:
-    image: ghcr.io/kewinzaq1/proof-agent:pomerium-akash-v1
+    image: ghcr.io/kewinzaq1/proof-agent:pomerium-akash-v4
     expose:
       - port: 8787
         to:
@@ -54,6 +59,9 @@ profiles:
         proof-agent:
           denom: uakt
           amount: 1000
+        proof-ip:
+          denom: uakt
+          amount: 10000
 
 deployment:
   pomerium:
