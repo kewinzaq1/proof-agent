@@ -112,6 +112,9 @@ export default function ExperimentClient({ user }: { user: { displayName: string
           reflection,
           completed,
           checkInId: plan?.checkInId,
+          priorHypotheses: plan?.hypotheses,
+          selectedHypothesisId: plan?.selectedHypothesisId,
+          prediction: plan?.prediction,
         }),
       });
       if (!response.ok) throw new Error("The loop could not run.");
@@ -225,9 +228,11 @@ export default function ExperimentClient({ user }: { user: { displayName: string
           {step === "plan" && plan && (
             <div className="stage-card result-stage">
               <div className="result-topline"><div className="stage-kicker">A WORKING THEORY · 03</div><span className={`provider-badge ${plan.sponsorStack?.verified ? "sponsor-stack" : plan.provider}`}>{providerLabel(plan)}</span></div>
-              <h1>Here’s what Proof is <em>wondering.</em></h1>
-              <div className="result-hypothesis"><span>◇</span><div><small>HELD LIGHTLY</small><p>{plan.hypothesis}</p><div className="result-confidence"><i><b style={{ width: `${plan.confidence}%` }} /></i>{plan.confidence}% confidence</div></div></div>
+              <h1>Three explanations.<br /><em>One honest test.</em></h1>
+              <HypothesisArena result={plan} />
+              <div className="prediction-card"><span>IF THIS IS RIGHT…</span><p>{plan.prediction}</p><small>{plan.selectionReason}</small></div>
               <div className="result-experiment"><div className="experiment-heading"><span>ONE SMALL WAY TO LEARN</span><strong>{plan.experiment.duration}</strong></div><h2>{plan.experiment.title}</h2><p>{plan.experiment.instruction}</p><div className="why-line"><strong>Why this?</strong>{plan.experiment.reason}</div></div>
+              <SponsorTrace result={plan} />
               <div className="result-actions"><button className="continue-button" type="button" onClick={() => setStep("checkin")}>Come back to this experiment <span>→</span></button><button className="secondary-button" type="button" onClick={() => setStep("context")}>Add more context</button></div>
             </div>
           )}
@@ -247,9 +252,11 @@ export default function ExperimentClient({ user }: { user: { displayName: string
             <div className="stage-card result-stage update-stage">
               <div className="result-topline"><div className="stage-kicker">LEARN · 05</div><span className={`provider-badge ${update.sponsorStack?.verified ? "sponsor-stack" : update.provider}`}>{providerLabel(update)}</span></div>
               <h1>Your story got a little <em>more honest.</em></h1>
-              <div className="learning-banner"><span>✦</span><div><small>WHAT PROOF WILL REMEMBER</small><p>{update.insight}</p></div></div>
-              <div className="belief-shift"><div><small>BEFORE</small><p>{plan.hypothesis}</p><strong>{plan.confidence}%</strong></div><span>→</span><div><small>NOW</small><p>{update.hypothesis}</p><strong>{update.confidence}%</strong></div></div>
+              <div className="learning-banner"><span>✦</span><div><small>WHAT REALITY CHANGED</small><p>{update.insight}</p></div></div>
+              <ConfidenceShift before={plan} after={update} />
+              <div className="prediction-card updated"><span>NEW PREDICTION</span><p>{update.prediction}</p><small>{update.selectionReason}</small></div>
               <div className="result-experiment next"><div className="experiment-heading"><span>WHEN YOU’RE READY</span><strong>{update.experiment.duration}</strong></div><h2>{update.experiment.title}</h2><p>{update.experiment.instruction}</p></div>
+              <SponsorTrace result={update} />
               <div className="loop-complete"><span>✓</span><div><strong>This learning is now part of your story.</strong><p>The next check-in will begin here—not from zero.</p></div></div>
               <button className="continue-button" type="button" onClick={() => setView("home")}>Return to your story <span>→</span></button>
             </div>
@@ -260,6 +267,41 @@ export default function ExperimentClient({ user }: { user: { displayName: string
       </section>
     </main>
   );
+}
+
+function HypothesisArena({ result }: { result: CoachResponse }) {
+  return <section className="hypothesis-arena" aria-label="Competing hypotheses">
+    <div className="arena-heading"><span>ZERO GENERATED 3 COMPETING HYPOTHESES</span><small>Akash agent selected the best testable explanation</small></div>
+    <div className="hypothesis-grid">{result.hypotheses.map((item, index) => {
+      const selected = item.id === result.selectedHypothesisId;
+      return <article className={selected ? "selected" : ""} key={item.id}>
+        <div className="hypothesis-top"><span>H{index + 1}</span>{selected && <strong>SELECTED</strong>}</div>
+        <h2>{item.label}</h2><p>{item.explanation}</p>
+        <div className="hypothesis-evidence">{item.evidence?.[0] || "Needs more evidence"}</div>
+        <div className="hypothesis-meter"><i><b style={{ width: `${item.confidence}%` }} /></i><strong>{item.confidence}%</strong></div>
+      </article>;
+    })}</div>
+  </section>;
+}
+
+function ConfidenceShift({ before, after }: { before: CoachResponse; after: CoachResponse }) {
+  return <section className="confidence-shift" aria-label="How the hypotheses changed">
+    <div className="arena-heading"><span>THE MODEL CHANGED ITS MIND</span><small>New evidence updated every candidate</small></div>
+    <div className="shift-list">{after.hypotheses.map((item) => {
+      const prior = before.hypotheses.find((candidate) => candidate.id === item.id);
+      const previous = item.previousConfidence ?? prior?.confidence ?? item.confidence;
+      const delta = item.delta ?? item.confidence - previous;
+      return <article key={item.id} className={item.id === after.selectedHypothesisId ? "selected" : ""}>
+        <div><span className={`verdict ${item.verdict || "steady"}`}>{item.verdict || "updated"}</span><h3>{item.label}</h3><p>{item.evidence?.[0]}</p></div>
+        <div className="shift-numbers"><span>{previous}%</span><i>→</i><strong>{item.confidence}%</strong><small className={delta >= 0 ? "up" : "down"}>{delta > 0 ? "+" : ""}{delta}</small></div>
+      </article>;
+    })}</div>
+  </section>;
+}
+
+function SponsorTrace({ result }: { result: CoachResponse }) {
+  if (!result.sponsorStack?.verified) return null;
+  return <div className="sponsor-trace"><div><span>01</span><strong>Pomerium</strong><small>verified the private agent call</small></div><i>→</i><div><span>02</span><strong>Akash</strong><small>ran the self-correcting loop</small></div><i>→</i><div><span>03</span><strong>Zero.xyz</strong><small>{result.zeroRuns?.length || 2} reasoning stages completed</small></div></div>;
 }
 
 function RotatingThought({ kind }: { kind: keyof typeof thinkingLines }) {

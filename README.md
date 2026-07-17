@@ -16,21 +16,21 @@ The demo completes the entire loop in one sitting:
 
 1. Choose one repeated behavior.
 2. Describe the moment it usually happens.
-3. Receive a working hypothesis and one sub-five-minute experiment.
+3. See three competing hypotheses, the selected explanation, and its falsifiable prediction.
 4. Report what happened, including a missed attempt.
-5. Watch the confidence, explanation, and next experiment change.
+5. Watch all three confidence scores move as the agent rejects or promotes explanations.
 
 Failure is evidence in Proof. The agent changes the plan instead of judging the user.
 
 ## Sponsor integrations
 
-The production request path uses three sponsor tools in one verifiable chain:
+The production request path uses three sponsor tools in one verifiable, multi-stage chain:
 
 ```text
 Proof website → Pomerium → Proof agent on Akash → Zero capability
 ```
 
-The UI only displays **Pomerium → Akash → Zero** when the agent has verified a signed Pomerium identity assertion and Zero has returned the reasoning result. Local fallbacks are labeled honestly and do not claim sponsor usage.
+The UI only displays **Pomerium → Akash → Zero** when the agent has verified a signed Pomerium identity assertion and Zero has returned both reasoning stages. It also shows the stage count and confidence changes, so sponsor usage is visible evidence rather than infrastructure trivia. Local fallbacks are labeled honestly and do not claim sponsor usage.
 
 ### Pomerium — identity-aware agent gateway
 
@@ -40,13 +40,13 @@ This keeps private behavioral reflections away from a bearer-token-only public e
 
 ### Zero — reasoning capability layer
 
-The `agent/` service sends the planning and reflection passes through a low-cost LLM capability discovered and paid for through Zero. The selected capability costs about $0.001 per call and is invoked through the official Zero CLI. Each response returns the Zero run ID and the UI marks live responses as **Powered by Zero**.
+The `agent/` service makes two deliberate Zero calls per loop stage. During planning, one call generates three competing hypotheses and a second critic selects the most testable explanation, records a prediction, and designs an experiment. During reflection, one call updates every confidence score from new evidence and a second redesigns the next experiment. Every call returns a Zero run ID for the visible execution trace.
 
 The frontend always has a deterministic fallback. If the paid capability or network fails during judging, the same full loop remains demoable and is labeled **Proof local loop** rather than pretending a sponsor call succeeded.
 
 ### Akash — portable agent runtime
 
-`deploy.yaml` contains an Akash SDL definition for the containerized Proof agent. The public website can remain lightweight while the Zero-enabled agent service runs as a portable container on decentralized compute.
+`deploy.yaml` contains the Akash SDL for the persistent loop orchestrator. Akash does more than serve an API: the running agent sequences Zero's hypothesis, critic, evidence-update, and redesign stages while keeping the reasoning service private behind Pomerium.
 
 ## Three-sponsor activation checklist
 
@@ -92,7 +92,7 @@ deploy.yaml          Akash SDL deployment definition
 ## Product rules
 
 - One goal at a time.
-- One hypothesis at a time.
+- Three competing hypotheses; one experiment at a time.
 - One experiment at a time.
 - No diagnoses.
 - No motivational filler.

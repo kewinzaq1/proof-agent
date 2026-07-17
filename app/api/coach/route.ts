@@ -54,6 +54,9 @@ export async function POST(request: Request) {
           ...(process.env.PROOF_AGENT_TOKEN
             ? { "x-proof-agent-token": process.env.PROOF_AGENT_TOKEN }
             : {}),
+          ...(process.env.ZERO_ACCESS_TOKEN ? { "x-zero-access-token": process.env.ZERO_ACCESS_TOKEN } : {}),
+          ...(process.env.ZERO_REFRESH_TOKEN ? { "x-zero-refresh-token": process.env.ZERO_REFRESH_TOKEN } : {}),
+          ...(process.env.ZERO_USER_ID ? { "x-zero-user-id": process.env.ZERO_USER_ID } : {}),
         },
         body: JSON.stringify(enrichedInput),
         signal: AbortSignal.timeout(25_000),
@@ -66,6 +69,11 @@ export async function POST(request: Request) {
   }
 
   result ??= runLocalCoach(enrichedInput);
+  const completeFallback = runLocalCoach(enrichedInput);
+  result.hypotheses = Array.isArray(result.hypotheses) && result.hypotheses.length === 3 ? result.hypotheses : completeFallback.hypotheses;
+  result.selectedHypothesisId ||= completeFallback.selectedHypothesisId;
+  result.selectionReason ||= completeFallback.selectionReason;
+  result.prediction ||= completeFallback.prediction;
   if (typeof result.confidence === "number") {
     result.confidence = Math.max(0, Math.min(100, Math.round(result.confidence <= 1 ? result.confidence * 100 : result.confidence)));
   }
@@ -84,12 +92,17 @@ export async function POST(request: Request) {
     completed: typeof input.completed === "boolean" ? input.completed : null,
     hypothesis: result.hypothesis,
     confidence: result.confidence,
+    hypotheses: result.hypotheses,
+    selectedHypothesisId: result.selectedHypothesisId,
+    selectionReason: result.selectionReason,
+    prediction: result.prediction,
     experimentTitle: result.experiment.title,
     experimentInstruction: result.experiment.instruction,
     experimentDuration: result.experiment.duration,
     insight: result.insight ?? null,
     learned: result.learned ?? null,
     provider: result.provider,
+    zeroRuns: result.zeroRuns ?? null,
     createdAt: now,
     updatedAt: now,
   };

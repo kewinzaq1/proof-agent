@@ -1,10 +1,11 @@
 # Proof agent service
 
-The frontend works without this service, but calls it when `PROOF_AGENT_URL` is configured. The service delegates each plan/reflection pass to a pay-per-call LLM discovered through Zero.
+The frontend works without this service, but calls it when `PROOF_AGENT_URL` is configured. The Akash-hosted service orchestrates two Zero reasoning stages for every plan or reflection: generate/evaluate, then select/redesign. The response includes all competing hypotheses, a falsifiable prediction, confidence deltas, and the Zero run IDs.
 
 ## Required runtime values
 
-- `ZERO_SESSION_TOKEN`: Zero agent session token.
+- `ZERO_SESSION_TOKEN`: optional standalone Zero agent session token.
+- In production, the website stores the Zero access, refresh, and user identifiers as private runtime values and sends them through the Pomerium-protected request. The Akash agent creates an ephemeral Zero config for that one loop and deletes it afterward, keeping renewable credentials out of the public Akash manifest.
 - A funded Zero wallet (the selected capability costs approximately $0.001 per loop pass).
 - `PROOF_AGENT_TOKEN`: optional shared secret between the site and this service.
 - `PROOF_WEB_ORIGIN`: allowed browser origin.
